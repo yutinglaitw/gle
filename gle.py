@@ -6,6 +6,7 @@ from urllib.parse import parse_qs
 class Google:
     URL_HOME   = 'https://www.google.com'
     URL_SEARCH = 'https://www.google.com/search?%s'
+
     def __init__(self, count=3, params={'tld':'com', 'hl':'en', 
         'tbs':'0', 'safe':'off', 'tpe':''}):
         assert count >= 1, 'Invalid page count!'

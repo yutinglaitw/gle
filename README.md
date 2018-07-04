@@ -4,6 +4,8 @@ A tiny but functional google searcher lib.
 
 # Install
 
+The gle lib relies on python requests and beautifulsoup, install these with:
+
 ~~~
 pip install requests
 pip install bs4
@@ -14,9 +16,10 @@ pip install bs4
 ~~~python
 from gle import Google
 
-# Count is the number of pages.
+# Count is the number of pages that you want to extract results.
 x = Google(count=2)
 pages = x.search('python vy editor')
+
 for indi in pages:
     for indj in indi:
         print(indj)
