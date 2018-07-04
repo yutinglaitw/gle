@@ -27,6 +27,7 @@ class Google:
             next, hits = self.build(requests.get(
                     next, cookies=self.cookies).text)
             yield hits
+            if not next: break
 
     def build(self, html):
         dom  = BeautifulSoup(html, 'lxml')
