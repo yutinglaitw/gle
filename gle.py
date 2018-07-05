@@ -21,22 +21,18 @@ class Google:
         self.params['q'] = data
         url = self.URL_SEARCH % urlencode(self.params)
         req = requests.get(url, cookies=self.cookies)
-
-        next, hits   = self.build(req.text)
         self.cookies = req.cookies
-        fd = open('foo.html', 'w')
-        fd.write(req.text)
-        fd.close()
+        next, hits   = self.build(req.text)
         yield hits
 
         for ind in range(self.count - 1):
-            next, hits = self.get_next(next)
-            if next:
+            next, hits = self.get_next_page(next)
+            if next: 
                 yield hits
             else:
                 break
 
-    def get_next(self, next):
+    def get_next_page(self, next):
         req = requests.get(next, cookies=self.cookies)
         self.cookies = req.cookies
         return self.build(req.text)
@@ -51,12 +47,6 @@ class Google:
         
         return next, self.get_hits(dom)
 
-    def get_hits(self, dom):
-        elems = dom.find_all('div', {'class':'g'})
-        for indi in elems:
-            for indj in self.ext_hit(indi):
-                yield indj
-
     def ext_hit(self, hit):
         title = hit.find('h3', {'class': 'r'})
         desc  = hit.find('span', {'class': 'st'})
@@ -67,4 +57,9 @@ class Google:
                 'url': parse_qs(url.get('href'))['/url?q'][0], }
 
 
+    def get_hits(self, dom):
+        elems = dom.find_all('div', {'class':'g'})
+        for indi in elems:
+            for indj in self.ext_hit(indi):
+                yield indj
 
