@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name="gle",
-      version="1.0.0",
+      version="1.0.1",
       description="A tiny but function google searcher lib.",
       py_modules=["gle"],
       author="Iury O. G. Figueiredo",
@@ -12,6 +12,7 @@ setup(name="gle",
       download_url='https://github.com/vyapp/gle/releases',
       keywords=['search', 'searcher', 'google', 'results'],
       classifiers=[])
+
 
 
 

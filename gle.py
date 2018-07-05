@@ -2,6 +2,7 @@ import requests
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 from urllib.parse import parse_qs
+import re
 
 class Google:
     URL_HOME   = 'https://www.google.com'
@@ -20,24 +21,38 @@ class Google:
         self.params['q'] = data
         url = self.URL_SEARCH % urlencode(self.params)
         req = requests.get(url, cookies=self.cookies)
-        next, hits = self.build(req.text)
+
+        next, hits   = self.build(req.text)
+        self.cookies = req.cookies
+        fd = open('foo.html', 'w')
+        fd.write(req.text)
+        fd.close()
         yield hits
 
         for ind in range(self.count - 1):
-            next, hits = self.build(requests.get(
-                    next, cookies=self.cookies).text)
-            yield hits
-            if not next: break
+            next, hits = self.get_next(next)
+            if next:
+                yield hits
+            else:
+                break
+
+    def get_next(self, next):
+        req = requests.get(next, cookies=self.cookies)
+        self.cookies = req.cookies
+        return self.build(req.text)
 
     def build(self, html):
         dom  = BeautifulSoup(html, 'lxml')
-        next = dom.find('a', {'class':'fl'}).get('href')
-        next = '%s%s' % (self.URL_HOME, next)
+        next = dom.find('a', {'class':'fl',
+        'href': re.compile('/search\?')})
+
+        next = '%s%s' % (self.URL_HOME, 
+        next.get('href')) if next else None
+        
         return next, self.get_hits(dom)
 
     def get_hits(self, dom):
         elems = dom.find_all('div', {'class':'g'})
-
         for indi in elems:
             for indj in self.ext_hit(indi):
                 yield indj
@@ -50,5 +65,6 @@ class Google:
         if title and desc and url:
             yield {'title':  title.text, 'desc': desc.text, 
                 'url': parse_qs(url.get('href'))['/url?q'][0], }
+
 
 
