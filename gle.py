@@ -5,8 +5,8 @@ from urllib.parse import parse_qs
 import re
 
 class Google:
-    URL_HOME   = 'https://www.google.com'
-    URL_SEARCH = 'https://www.google.com/search?%s'
+    URL_HOME   = 'https://www.google.com.tw'
+    URL_SEARCH = 'https://www.google.com.tw/search?q=%s'
 
     def __init__(self, count=3, params={'tld':'com', 'hl':'en', 
         'tbs':'0', 'safe':'off', 'tpe':''}):
